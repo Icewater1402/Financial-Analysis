@@ -40,3 +40,9 @@
 ## 07/05/2024
 * Created repository
 * Updated README 
+
+## 07/15/2024
+* Started Database with CSV import 
+* Familiarized with queries and tables
+* Research Pandas Python Library
+* New Classes for functions for viewing summaries
