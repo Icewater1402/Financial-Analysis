@@ -13,14 +13,15 @@
 * 
 
 # Known Errors
-* 
+* This program accepts CSV files from Chase ONLY (for now)
 
 # Build Instructions
-* N/A
+* python3 main.py
+* Select your CSV file from Chase
 
 # How it Works
 * Run the program 
-* Type the path of the CSV you wish to analyze
+* Select the CSV you would like to analyze
 * Use the terminal to choose which information you would like to view
 * Divide by month and categorize between paycheck, living expenses, gas, grocery, other
 
@@ -29,11 +30,11 @@
     * Total spending - essentials (calculated manually) = leisure
 
 # What already exists
-* Summary of each month categorized between essentials, savings, leisure
+* Summary of each month categorized between essentials, savings, leisure (in progress)
 
 
 # What we want to add 
-* Automated Sorting
+* Automated Sorting (export to excel file)
 * How much money do I have for leisure per month? (adaptable monthly leisure cap)
 
 # CHANGELOG
