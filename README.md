@@ -46,3 +46,5 @@
 * Familiarized with queries and tables
 * Research Pandas Python Library
 * New Classes for functions for viewing summaries
+* Organized functions into classes 
+* Added tkinter library for windows explorer functionality and optimized pathfinding 
