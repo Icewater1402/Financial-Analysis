@@ -4,13 +4,16 @@
 # Identifying Information
 * Name: Christopher Isidro
 * Email: chris.isidro18@gmail.com
-* Collaborators: Christopher Isidro, Samantha Isidro, Jessica Isidro
+* Collaborators: Christopher Isidro
 
 # Source Files
 * README.md
+* main.py
+* summarizer.py
+* data_importer.py
 
 # References
-* 
+* GPT-3.5 Debugging and MatPlot Syntax 
 
 # Known Errors
 * This program accepts CSV files from Chase ONLY (for now)
@@ -49,3 +52,8 @@
 * New Classes for functions for viewing summaries
 * Organized functions into classes 
 * Added tkinter library for windows explorer functionality and optimized pathfinding 
+
+## 07/22/2024
+* Implemented pie chart visual 
+* Added new functions in summarizer.py
+* Added .gitignore

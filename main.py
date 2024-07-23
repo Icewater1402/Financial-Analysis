@@ -27,27 +27,10 @@ def main():
     # Initialize Summarizer
     summarizer = Summarizer(db_file_path)
     
-    # Personal, Food & Drink, Shopping, Entertainment, Gas, Health and Wellness, Education, Travel, Groceries, 
-    total_food_spending = summarizer.get_total_spending_by_category('Food & Drink') #Food and Drink
-    print("Total Food Spending:", total_food_spending)
+    summarizer.summarize_category_spending()
     
-    total_entertainment_spending = summarizer.get_total_spending_by_category('Entertainment') #Entertainment 
-    print("Total Entertainment Spending:", total_entertainment_spending)
-
-    total_gas_spending = summarizer.get_total_spending_by_category('Gas') #Gas
-    print("Total Gas Spending:", total_gas_spending)
-
-    total_gas_spending = summarizer.get_total_spending_by_category('Health & Wellness') #Health and Wellness
-    print("Total Health and Wellness Spending:", total_gas_spending)
-
-    total_gas_spending = summarizer.get_total_spending_by_category('Education') #Education
-    print("Total Education Spending:", total_gas_spending)
-
-    total_gas_spending = summarizer.get_total_spending_by_category('Travel') #Travel
-    print("Total Travel Spending:", total_gas_spending)
-
-    total_gas_spending = summarizer.get_total_spending_by_category('Groceries') #Groceries
-    print("Total Groceries Spending:", total_gas_spending)
+    summarizer.create_pie_chart()
+    
 
     data_importer.drop_table()
 
