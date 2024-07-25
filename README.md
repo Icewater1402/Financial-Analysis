@@ -33,12 +33,16 @@
     * Total spending - essentials (calculated manually) = leisure
 
 # What already exists
-* Summary of each month categorized between essentials, savings, leisure (in progress)
+* Summary of Total Spendings (pie chart)
 
 
 # What we want to add 
 * Automated Sorting (export to excel file)
 * How much money do I have for leisure per month? (adaptable monthly leisure cap)
+* Per Month spendings (aside from complete) 
+* Spending Predictions 
+* Category Recommendations
+* Anomaly Detection: Unusual Spending Patterns
 
 # CHANGELOG
 ## 07/05/2024
