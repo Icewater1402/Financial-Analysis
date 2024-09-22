@@ -28,8 +28,12 @@ def main():
     summarizer = Summarizer(db_file_path)
     
     summarizer.summarize_category_spending()
+    summarizer.display_all_categories()
+    summarizer.display_expenses_by_category()
+
     
-    summarizer.create_pie_chart()
+    #summarizer.create_pie_chart()
+    #summarizer.create_line_graph()
     
 
     data_importer.drop_table()

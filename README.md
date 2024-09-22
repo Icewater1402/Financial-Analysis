@@ -43,6 +43,7 @@
 * Spending Predictions 
 * Category Recommendations
 * Anomaly Detection: Unusual Spending Patterns
+* List by Category 
 
 # CHANGELOG
 ## 07/05/2024
@@ -61,3 +62,7 @@
 * Implemented pie chart visual 
 * Added new functions in summarizer.py
 * Added .gitignore
+
+## 09/22/2024
+* Implemented Line Graph (trend over time)
+* Added summarizer functions (summarize by category + list possible categories)
