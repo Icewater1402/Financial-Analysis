@@ -66,3 +66,11 @@
 ## 09/22/2024
 * Implemented Line Graph (trend over time)
 * Added summarizer functions (summarize by category + list possible categories)
+
+## 09/26/2024
+* WHAT A NIGHTMARE
+* I wanted to make a console class to make an interactive experience with importing and updating the database to visualize it better
+* OH MAN the issue was that you run the console log while initializing the classes, but the classes normally got their file path in MAIN. So what happened was there was a shit ton of initialization errors 
+* Was not able to make it work, so we'll try again another day ;) 
+* Reverted back to what was working, I should totally make a branch next time 
+

@@ -32,8 +32,8 @@ def main():
     summarizer.display_expenses_by_category()
 
     
-    #summarizer.create_pie_chart()
-    #summarizer.create_line_graph()
+    summarizer.create_pie_chart()
+    summarizer.create_line_graph()
     
 
     data_importer.drop_table()
