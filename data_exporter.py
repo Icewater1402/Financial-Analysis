@@ -6,68 +6,65 @@ import pandas as pd
 class DataExporter:
     def __init__(self, db_file_path):
         self.db_file_path = db_file_path
-    
-    def export_monthly_spending(self, output_file_path):
+
+    def export_transactions_to_excel(self, output_file_path):
         conn = sqlite3.connect(self.db_file_path)
         cursor = conn.cursor()
 
-        # Query to select the necessary data
-        query = '''SELECT Date, Amount FROM finance_table WHERE Amount < 0'''  # Assuming negative values are expenses
+        # Query to select all transaction data
+        query = '''SELECT Date, Description, Amount FROM finance_table'''  # Include description
         cursor.execute(query)
         rows = cursor.fetchall()
 
         conn.close()
 
         # Convert the data into a pandas DataFrame for easier manipulation
-        data = pd.DataFrame(rows, columns=['Date', 'Amount'])
+        data = pd.DataFrame(rows, columns=['Date', 'Description', 'Amount'])
 
         # Convert 'Date' to a datetime object and extract month and year
         data['Date'] = pd.to_datetime(data['Date'])
         data['Year-Month'] = data['Date'].dt.to_period('M')
 
-        # Group by Year-Month and calculate total and average spending
-        monthly_spending = data.groupby('Year-Month').agg(
-            total_spending=('Amount', 'sum'),
-            average_spending=('Amount', 'mean')
-        ).reset_index()
+        # Create a Pandas Excel writer using XlsxWriter as the engine
+        with pd.ExcelWriter(output_file_path, engine='xlsxwriter') as writer:
+            # Export transactions to individual sheets by month
+            for month, group in data.groupby(data['Year-Month']):
+                month_name = month.strftime('%Y-%m')  # Format to 'YYYY-MM'
+                group.to_excel(writer, sheet_name=month_name, index=False)
 
-        # Create a mapping of year-month to full month names
-        monthly_spending['Month'] = monthly_spending['Year-Month'].dt.month
-        monthly_spending['Year'] = monthly_spending['Year-Month'].dt.year
-        monthly_spending['Month'] = monthly_spending['Month'].apply(lambda x: datetime(2024, x, 1).strftime('%B'))  # Get full month name
+            # Create monthly spending summary
+            monthly_summary = data[data['Amount'] < 0].groupby(data['Year-Month']).agg(
+                total_spending=('Amount', 'sum'),
+                average_spending=('Amount', 'mean')
+            ).reset_index()
 
-        # Pivot the DataFrame to have month names as columns
-        monthly_spending_pivot = monthly_spending.pivot_table(
-            index='Year',  # Using 'Year' as the index
-            columns='Month',
-            values='total_spending',
-            fill_value=0
-        )
+            # Format month names for summary
+            monthly_summary['Month'] = monthly_summary['Year-Month'].dt.month
+            monthly_summary['Year'] = monthly_summary['Year-Month'].dt.year
+            monthly_summary['Month'] = monthly_summary['Month'].apply(lambda x: datetime(2024, x, 1).strftime('%B'))  # Get full month name
 
-        # Calculate average spending per month for the 'Average Spending' row
-        average_spending_values = monthly_spending.groupby('Month')['average_spending'].mean().reindex(monthly_spending_pivot.columns, fill_value=0)
+            # Pivot the DataFrame to have month names as columns
+            summary_pivot = monthly_summary.pivot_table(
+                index='Year',  # Using 'Year' as the index
+                columns='Month',
+                values='total_spending',
+                fill_value=0
+            )
 
-        # Create a Series for the average spending row with correct index
-        monthly_spending_pivot.loc['Average Spending'] = average_spending_values
+            # Add average spending as an additional row
+            average_spending_values = monthly_summary.groupby('Month')['average_spending'].mean().reindex(summary_pivot.columns, fill_value=0)
+            summary_pivot.loc['Average Spending'] = average_spending_values
+            summary_pivot.reset_index(drop=False, inplace=True)
 
-        # Reset the index to ensure proper alignment
-        monthly_spending_pivot.reset_index(drop=False, inplace=True)
-
-        # Check the output file path's extension and save accordingly
-        if output_file_path.endswith('.xlsx'):
-            monthly_spending_pivot.to_excel(output_file_path, index=False)
-        elif output_file_path.endswith('.csv'):
-            monthly_spending_pivot.to_csv(output_file_path, index=False)
-        else:
-            raise ValueError("Unsupported file format. Please use '.xlsx' for Excel or '.csv' for CSV.")
+            # Write summary to a new sheet
+            summary_pivot.to_excel(writer, sheet_name='Monthly Summary', index=False)
 
         print(f"Data exported to {output_file_path}")
 
-
-
 # Usage
 db_file_path = 'finances.db'
-output_file_path = 'monthly_spending.xlsx'
+summary_output_file_path = 'monthly_spending_summary.xlsx'
+transactions_output_file_path = 'monthly_transactions.xlsx'
 
 exporter = DataExporter(db_file_path)
-exporter.export_monthly_spending(output_file_path)
+exporter.export_transactions_to_excel(transactions_output_file_path)

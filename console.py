@@ -69,8 +69,8 @@ class Console:
     def export_monthly_spending(self):
         output_file_path = filedialog.asksaveasfilename(
             title="Save Monthly Spending Report",
-            defaultextension=".csv",
-            filetypes=(("CSV files", "*.csv"), ("All files", "*.*"))
+            defaultextension=".xlsx",
+            filetypes=(("CSV files", "*.xlsx"), ("All files", "*.*"))
         )
         
         if not output_file_path:
@@ -78,7 +78,7 @@ class Console:
             return
 
         exporter = DataExporter(self.db_file_path)
-        exporter.export_monthly_spending(output_file_path)
+        exporter.export_transactions_to_excel(output_file_path)
     
     def import_csv_data(self):
         # Hide the root window
