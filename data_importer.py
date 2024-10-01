@@ -36,6 +36,7 @@ class DataImporter:
                     ''', row)
 
                 conn.commit()
+                
         else:
             print("Table 'finance_table' already exists. Skipping creation and data insertion.")
         conn.close()

@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 from data_importer import DataImporter
 from summarizer import Summarizer
+from console import Console
 
 def main():
     root = tk.Tk()
@@ -39,4 +40,5 @@ def main():
     data_importer.drop_table()
 
 if __name__ == '__main__':
-    main()
+    console = Console()
+    console.run()
