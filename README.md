@@ -74,3 +74,11 @@
 * Was not able to make it work, so we'll try again another day ;) 
 * Reverted back to what was working, I should totally make a branch next time 
 
+## 09/30/2024
+* Nightmare is over. Console is properly implemented in console.py
+* Options work as intended. The frontend works properly
+* New options include data import and export 
+* Data import needs to be able to add onto existing databse (work in progress)
+* Data export works as intended so far.  Multiple sheets of month summary and overall summary of simple averages and totals 
+* Future updates include: Importing salaries, importing positive values, "money saved", and repeated billings 
+
