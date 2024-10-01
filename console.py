@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 from data_importer import DataImporter
 from summarizer import Summarizer
+from data_exporter import DataExporter
 
 class Console:
     def __init__(self):
@@ -18,7 +19,8 @@ class Console:
             print("4. Display Expenses by Category")
             print("5. Create Pie Chart of Spending")
             print("6. Create Line Graph of Spending")
-            print("7. Clear All Data")
+            print("7. Export Monthly Spending")
+            print("8. Clear All Data")
             print("0. Exit")
             
             choice = input("Please choose an option: ")
@@ -51,6 +53,8 @@ class Console:
                 else:
                     print("No CSV data imported yet.")
             elif choice == '7':
+                self.export_monthly_spending()
+            elif choice == '8':
                 if self.data_importer:
                     self.data_importer.drop_table()
                     print("All data cleared from the database.")
@@ -62,6 +66,20 @@ class Console:
             else:
                 print("Invalid option. Please try again.")
 
+    def export_monthly_spending(self):
+        output_file_path = filedialog.asksaveasfilename(
+            title="Save Monthly Spending Report",
+            defaultextension=".csv",
+            filetypes=(("CSV files", "*.csv"), ("All files", "*.*"))
+        )
+        
+        if not output_file_path:
+            print("No file selected. Exiting.")
+            return
+
+        exporter = DataExporter(self.db_file_path)
+        exporter.export_monthly_spending(output_file_path)
+    
     def import_csv_data(self):
         # Hide the root window
         root = tk.Tk()
