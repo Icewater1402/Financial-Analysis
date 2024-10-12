@@ -14,13 +14,14 @@ class Console:
         while True:
             print("\n=== Financial Data Manager ===")
             print("1. Import CSV Data")
-            print("2. Summarize Category Spending")
-            print("3. Display All Spending Categories")
-            print("4. Display Expenses by Category")
-            print("5. Create Pie Chart of Spending")
-            print("6. Create Line Graph of Spending")
-            print("7. Export Monthly Spending")
-            print("8. Clear All Data")
+            print("2. Select Essentials Categories")
+            print("3. Summarize Category Spending")
+            print("4. Display All Spending Categories")
+            print("5. Display Expenses by Category")
+            print("6. Create Pie Chart of Spending")
+            print("7. Create Line Graph of Spending")
+            print("8. Export Monthly Spending")
+            print("9. Clear All Data")
             print("0. Exit")
             
             choice = input("Please choose an option: ")
@@ -28,33 +29,35 @@ class Console:
             if choice == '1':
                 self.import_csv_data()
             elif choice == '2':
+                self.select_essentials()
+            elif choice == '3':
                 if self.summarizer:
                     self.summarizer.summarize_category_spending()
                 else:
                     print("No CSV data imported yet.")
-            elif choice == '3':
+            elif choice == '4':
                 if self.summarizer:
                     self.summarizer.display_all_categories()
                 else:
                     print("No CSV data imported yet.")
-            elif choice == '4':
+            elif choice == '5':
                 if self.summarizer:
                     self.summarizer.display_expenses_by_category()
                 else:
                     print("No CSV data imported yet.")
-            elif choice == '5':
+            elif choice == '6':
                 if self.summarizer:
                     self.summarizer.create_pie_chart()
                 else:
                     print("No CSV data imported yet.")
-            elif choice == '6':
+            elif choice == '7':
                 if self.summarizer:
                     self.summarizer.create_line_graph()
                 else:
                     print("No CSV data imported yet.")
-            elif choice == '7':
-                self.export_monthly_spending()
             elif choice == '8':
+                self.export_monthly_spending()
+            elif choice == '9':
                 if self.data_importer:
                     self.data_importer.drop_table()
                     print("All data cleared from the database.")
@@ -95,7 +98,7 @@ class Console:
             print("No file selected. Exiting.")
             return
 
-        exporter = DataExporter(self.db_file_path)
+        exporter = DataExporter(self.db_file_path, self.essentials)
         exporter.export_transactions_to_excel(output_file_path)
     
     def import_csv_data(self):

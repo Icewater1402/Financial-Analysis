@@ -1,32 +1,25 @@
-import csv
 import sqlite3
-from datetime import datetime
 import pandas as pd
+from datetime import datetime
 
 class DataExporter:
-    def __init__(self, db_file_path):
+    def __init__(self, db_file_path, essentials):
         self.db_file_path = db_file_path
+        self.essentials = essentials  # Store essentials list
 
     def export_transactions_to_excel(self, output_file_path):
         conn = sqlite3.connect(self.db_file_path)
         cursor = conn.cursor()
 
-        #check existence of table 
-        cursor.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='finance_table'")
-        if cursor.fetchone()[0] == 0:
-            print("Table 'finance_table' does not exist. Cannot export data.")
-            conn.close()
-            return 
-
         # Query to select all transaction data
-        query = '''SELECT Date, Description, Amount FROM finance_table'''  # Include description
+        query = '''SELECT Date, Description, Category, Amount FROM finance_table'''  # Include category
         cursor.execute(query)
         rows = cursor.fetchall()
 
         conn.close()
 
         # Convert the data into a pandas DataFrame for easier manipulation
-        data = pd.DataFrame(rows, columns=['Date', 'Description', 'Amount'])
+        data = pd.DataFrame(rows, columns=['Date', 'Description', 'Category', 'Amount'])
 
         # Convert 'Date' to a datetime object and extract month and year
         data['Date'] = pd.to_datetime(data['Date'])
@@ -66,12 +59,28 @@ class DataExporter:
             # Write summary to a new sheet
             summary_pivot.to_excel(writer, sheet_name='Monthly Summary', index=False)
 
+            # Calculate totals for the essentials categories for the snapshot sheet
+            snapshot_data = {essential: 0 for essential in self.essentials}
+
+            # Sum the amounts for each essential category
+            for essential in self.essentials:
+                total = data[data['Category'] == essential]['Amount'].sum()
+                snapshot_data[essential] = total
+
+            # Prepare snapshot DataFrame with categories as rows
+            snapshot_df = pd.DataFrame(list(snapshot_data.items()), columns=['Category', 'Total'])
+
+            # Create a summary DataFrame for total spending
+            total_spending = data['Amount'].sum()
+            total_df = pd.DataFrame({
+                'Category': ['Total Spending'],
+                'Total': [total_spending]
+            })
+
+            # Combine total_df and snapshot_df
+            final_df = pd.concat([total_df, snapshot_df], ignore_index=True)
+
+            # Write the final DataFrame to a new sheet
+            final_df.to_excel(writer, sheet_name='Snapshot', index=False)
+
         print(f"Data exported to {output_file_path}")
-
-# Usage
-db_file_path = 'finances.db'
-summary_output_file_path = 'monthly_spending_summary.xlsx'
-transactions_output_file_path = 'monthly_transactions.xlsx'
-
-exporter = DataExporter(db_file_path)
-exporter.export_transactions_to_excel(transactions_output_file_path)
