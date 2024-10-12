@@ -58,6 +58,8 @@ class Console:
                 if self.data_importer:
                     self.data_importer.drop_table()
                     print("All data cleared from the database.")
+                    self.data_importer = None
+                    self.summarizer = None
                 else:
                     print("No data imported yet.")
             elif choice == '0':
@@ -65,6 +67,22 @@ class Console:
                 break
             else:
                 print("Invalid option. Please try again.")
+    
+    def select_essentials(self):
+        if not self.summarizer:
+            print("No CSV data imported yet.")
+            return 
+        
+        all_categories = self.summarizer.get_all_categories()
+        print("Available Categories: ")
+        for indx, category in enumerate(all_categories, start = 1):
+            print(f"{indx}. {category}")
+        
+        selected_indices = input("Select essential categories by numbers (comma-separated): ")
+        selected_indices = selected_indices.split(',')
+
+        self.essentials = [all_categories[int(index) - 1] for index in selected_indices if index.isdigit() and 0 < int(index) <= len(all_categories)]
+        print("Selected Essentials:", self.essentials)
 
     def export_monthly_spending(self):
         output_file_path = filedialog.asksaveasfilename(

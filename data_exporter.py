@@ -11,6 +11,13 @@ class DataExporter:
         conn = sqlite3.connect(self.db_file_path)
         cursor = conn.cursor()
 
+        #check existence of table 
+        cursor.execute("SELECT count(name) FROM sqlite_master WHERE type='table' AND name='finance_table'")
+        if cursor.fetchone()[0] == 0:
+            print("Table 'finance_table' does not exist. Cannot export data.")
+            conn.close()
+            return 
+
         # Query to select all transaction data
         query = '''SELECT Date, Description, Amount FROM finance_table'''  # Include description
         cursor.execute(query)

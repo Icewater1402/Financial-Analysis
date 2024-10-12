@@ -25,6 +25,8 @@ class DataImporter:
                            )
                            ''')
             conn.commit()
+            print("Table 'finance_table' created.")
+
             with open(self.csv_file_path, 'r') as csv_file:
                 csv_reader = csv.reader(csv_file)
                 header = next(csv_reader)  # Skip the header row if there is one
@@ -37,8 +39,7 @@ class DataImporter:
 
                 conn.commit()
                 
-        else:
-            print("Table 'finance_table' already exists. Skipping creation and data insertion.")
+        print("Data imported successfully")
         conn.close()
 
     def drop_table(self):
