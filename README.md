@@ -82,3 +82,9 @@
 * Data export works as intended so far.  Multiple sheets of month summary and overall summary of simple averages and totals 
 * Future updates include: Importing salaries, importing positive values, "money saved", and repeated billings 
 
+## 10/11/2024
+* Fixed issue with table not existing upon running code 
+* Added essentials category where user can pick categories they want to list as essential 
+* Issue with format of "snapshot" in excel export 
+* Future idea: allow users to manually input income (as the program ignores all positive values) 
+
