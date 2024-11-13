@@ -88,3 +88,8 @@
 * Issue with format of "snapshot" in excel export 
 * Future idea: allow users to manually input income (as the program ignores all positive values) 
 
+## 11/12/2024
+* Checked to see if program works with bank statements instead of credit card 
+* Columns are not identical between credit card and bank (for chase) 
+* translations are going to be worked on in the future. For now, same credit statements :) 
+* Small fix with sheet order on data export. Monthly summary now appears first before detailed transactions
