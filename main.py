@@ -8,6 +8,7 @@ def main():
     root = tk.Tk()
     root.withdraw()  # Hide the root window
 
+
     # Open a file dialog to select the CSV file
     csv_file_path = filedialog.askopenfilename(
         title="Select CSV file",
