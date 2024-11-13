@@ -93,3 +93,4 @@
 * Columns are not identical between credit card and bank (for chase) 
 * translations are going to be worked on in the future. For now, same credit statements :) 
 * Small fix with sheet order on data export. Monthly summary now appears first before detailed transactions
+* Updated exccel export formatting- more catered towards ateh 

@@ -24,35 +24,69 @@ class DataExporter:
         # Convert 'Date' to a datetime object and extract month and year
         data['Date'] = pd.to_datetime(data['Date'])
         data['Year-Month'] = data['Date'].dt.to_period('M')
+        data['Year'] = data['Date'].dt.year
 
         # Create a Pandas Excel writer using XlsxWriter as the engine
         with pd.ExcelWriter(output_file_path, engine='xlsxwriter') as writer:
-            # Create monthly spending summary
-            monthly_summary = data[data['Amount'] < 0].groupby(data['Year-Month']).agg(
-                total_spending=('Amount', 'sum'),
-                average_spending=('Amount', 'mean')
-            ).reset_index()
+            # Get unique years from the data
+            years = data['Year'].unique()
 
-            # Format month names for summary
-            monthly_summary['Month'] = monthly_summary['Year-Month'].dt.month
-            monthly_summary['Year'] = monthly_summary['Year-Month'].dt.year
-            monthly_summary['Month'] = monthly_summary['Month'].apply(lambda x: datetime(2024, x, 1).strftime('%B'))  # Get full month name
+            for year in years:
+                # Filter data by the current year
+                yearly_data = data[data['Year'] == year]
 
-            # Pivot the DataFrame to have month names as columns
-            summary_pivot = monthly_summary.pivot_table(
-                index='Year',  # Using 'Year' as the index
-                columns='Month',
-                values='total_spending',
-                fill_value=0
-            )
+                # Create a summary DataFrame for total spending and essentials for the Monthly Spending sheet
+                snapshot_data = {
+                    'paychecks': 0,
+                    'Total Spending': 0,  # This will have months in the second row
+                    'Essentials': {'rent/mortgage': 0, 'utilities': 0, 'car payment': 0, 'car insurance': 0, 
+                                'gasoline': 0, 'internet': 0, 'grocery': 0, 'parents': 0, 'other bills': 0},
+                    'Savings': 0,
+                    'special': 0,
+                    'leisure': 0,
+                    'w/o special': 0,
+                    'difference': 0
+                }
 
-            # Add average spending as an additional row
-            average_spending_values = monthly_summary.groupby('Month')['average_spending'].mean().reindex(summary_pivot.columns, fill_value=0)
-            summary_pivot.loc['Average Spending'] = average_spending_values
-            summary_pivot.reset_index(drop=False, inplace=True)
+                # Sum the amounts for each essential category
+                for essential in snapshot_data['Essentials']:
+                    snapshot_data['Essentials'][essential] = yearly_data[yearly_data['Category'] == essential]['Amount'].sum()
 
-            # Write summary to a new sheet
-            summary_pivot.to_excel(writer, sheet_name='Monthly Summary', index=False)
+                # Prepare snapshot DataFrame with categories as rows
+                essentials_data = [(key, value) for key, value in snapshot_data['Essentials'].items()]
+                snapshot_df = pd.DataFrame({
+                    'Category': ['paychecks', 'Total Spending'] + [item[0] for item in essentials_data] + ['Savings', 'special', 'leisure', 'w/o special', 'difference'],
+                    'Total': [snapshot_data['paychecks'], snapshot_data['Total Spending']] + [item[1] for item in essentials_data] + [snapshot_data['Savings'], snapshot_data['special'], snapshot_data['leisure'], snapshot_data['w/o special'], snapshot_data['difference']]
+                })
+
+                # Insert blank rows
+                blank_row = pd.DataFrame([[''] * len(snapshot_df.columns)], columns=snapshot_df.columns)
+                snapshot_df = pd.concat([snapshot_df.iloc[:2], blank_row, snapshot_df.iloc[2:6], blank_row, snapshot_df.iloc[6:]], ignore_index=True)
+
+                # Create additional columns for each month (January to December)
+                months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                
+                # Add months columns initialized with zero
+                for month in months:
+                    snapshot_df[month] = 0  # Initialize all months with zero
+
+                # Write the snapshot data to a new sheet (year-specific Monthly Spending sheet)
+                snapshot_df.to_excel(writer, sheet_name=f'{year} Monthly Spending', index=False, startrow=1)
+
+                # Add formatting to the Monthly Spending sheet to match the layout
+                workbook = writer.book
+                snapshot_sheet = writer.sheets[f'{year} Monthly Spending']
+
+                # Bold the 'Essentials' row
+                snapshot_sheet.write('A8', 'Essentials', workbook.add_format({'bold': True}))
+
+                # Adjust column widths for readability
+                snapshot_sheet.set_column('A:A', 20)  # 'Category' column
+                snapshot_sheet.set_column('B:B', 10)  # 'Total' column
+                snapshot_sheet.set_column('C:N', 10)  # Months columns (January to December)
+
+                # Write the header for monthly columns (Jan-Dec) in row 2
+                snapshot_sheet.write_row('C2', months)  # Put month names in the second row
             # Export transactions to individual sheets by month
             for month, group in data.groupby(data['Year-Month']):
                 month_name = month.strftime('%Y-%m')  # Format to 'YYYY-MM'
@@ -75,7 +109,7 @@ class DataExporter:
             total_df = pd.DataFrame({
                 'Category': ['Total Spending'],
                 'Total': [total_spending]
-            })
+                })
 
             # Combine total_df and snapshot_df
             final_df = pd.concat([total_df, snapshot_df], ignore_index=True)
