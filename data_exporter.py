@@ -27,11 +27,6 @@ class DataExporter:
 
         # Create a Pandas Excel writer using XlsxWriter as the engine
         with pd.ExcelWriter(output_file_path, engine='xlsxwriter') as writer:
-            # Export transactions to individual sheets by month
-            for month, group in data.groupby(data['Year-Month']):
-                month_name = month.strftime('%Y-%m')  # Format to 'YYYY-MM'
-                group.to_excel(writer, sheet_name=month_name, index=False)
-
             # Create monthly spending summary
             monthly_summary = data[data['Amount'] < 0].groupby(data['Year-Month']).agg(
                 total_spending=('Amount', 'sum'),
@@ -58,6 +53,11 @@ class DataExporter:
 
             # Write summary to a new sheet
             summary_pivot.to_excel(writer, sheet_name='Monthly Summary', index=False)
+            # Export transactions to individual sheets by month
+            for month, group in data.groupby(data['Year-Month']):
+                month_name = month.strftime('%Y-%m')  # Format to 'YYYY-MM'
+                group.to_excel(writer, sheet_name=month_name, index=False)
+
 
             # Calculate totals for the essentials categories for the snapshot sheet
             snapshot_data = {essential: 0 for essential in self.essentials}
