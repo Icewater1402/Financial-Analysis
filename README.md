@@ -94,3 +94,7 @@
 * translations are going to be worked on in the future. For now, same credit statements :) 
 * Small fix with sheet order on data export. Monthly summary now appears first before detailed transactions
 * Updated exccel export formatting- more catered towards ateh 
+
+## 11/13/2024
+* Added values for monthly summaries 
+* FIXME: Essentials are still an option in the program but remains a category in spreadsheet

@@ -25,6 +25,7 @@ class DataExporter:
         data['Date'] = pd.to_datetime(data['Date'])
         data['Year-Month'] = data['Date'].dt.to_period('M')
         data['Year'] = data['Date'].dt.year
+        data['Month'] = data['Date'].dt.month_name()
 
         # Create a Pandas Excel writer using XlsxWriter as the engine
         with pd.ExcelWriter(output_file_path, engine='xlsxwriter') as writer:
@@ -38,9 +39,8 @@ class DataExporter:
                 # Create a summary DataFrame for total spending and essentials for the Monthly Spending sheet
                 snapshot_data = {
                     'paychecks': 0,
-                    'Total Spending': 0,  # This will have months in the second row
-                    'Essentials': {'rent/mortgage': 0, 'utilities': 0, 'car payment': 0, 'car insurance': 0, 
-                                'gasoline': 0, 'internet': 0, 'grocery': 0, 'parents': 0, 'other bills': 0},
+                    'Total Spending': yearly_data[yearly_data['Amount'] < 0]['Amount'].sum(),  # This will have months in the second row
+                    'Essentials': {essential: 0 for essential in self.essentials},
                     'Savings': 0,
                     'special': 0,
                     'leisure': 0,
@@ -68,7 +68,11 @@ class DataExporter:
                 
                 # Add months columns initialized with zero
                 for month in months:
-                    snapshot_df[month] = 0  # Initialize all months with zero
+                    month_data = yearly_data[(yearly_data['Month'] == month) & (yearly_data['Amount'] < 0)]
+                    for index, row in snapshot_df.iterrows():
+                        category = row['Category']
+                        if category in self.essentials:
+                            snapshot_df.at[index, month] = month_data[month_data['Category'] == category]['Amount'].sum()
 
                 # Write the snapshot data to a new sheet (year-specific Monthly Spending sheet)
                 snapshot_df.to_excel(writer, sheet_name=f'{year} Monthly Spending', index=False, startrow=1)
