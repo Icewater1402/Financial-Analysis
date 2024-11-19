@@ -98,3 +98,11 @@
 ## 11/13/2024
 * Added values for monthly summaries 
 * FIXME: Essentials are still an option in the program but remains a category in spreadsheet
+
+## 11/18/2024
+* list every unique transaction 
+    * identify through console (bill/gas/recurring)
+    * store as var/dict -> export to chase with matching names 
+* FIXME: new column after amount
+* FIXME: reformat excel to 1-1 ateh example 
+* FIXME: get rid of essentials feature 
