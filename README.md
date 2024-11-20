@@ -106,3 +106,6 @@
 * FIXME: new column after amount
 * FIXME: reformat excel to 1-1 ateh example 
 * FIXME: get rid of essentials feature 
+
+## 11/19/2024
+* Finished 1-1 Match of updated format (currently all 0)
