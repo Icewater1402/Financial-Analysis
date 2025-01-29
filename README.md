@@ -109,3 +109,10 @@
 
 ## 11/19/2024
 * Finished 1-1 Match of updated format (currently all 0)
+
+## 01/28/2024
+* WELL HAPPY NEW YEAR LMAO
+* Took a break from projects, but here we are now. I want to start a lot of other projects but this INCOMPLETE
+* I want to take a different approach- catering to one person isn't what I want to do, so I want to continue the project how I want to
+* I started antoher one, but going through the debugging in the beginning again is a waste of time. I'll continue with this but just in a new direction
+* I want to start bank translations and then start making a GUI followed by the budgeting feature.

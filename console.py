@@ -105,7 +105,6 @@ class Console:
         # Hide the root window
         root = tk.Tk()
         root.withdraw() 
-        root.lift() 
 
         # Open file dialog to select the CSV file
         csv_file_path = filedialog.askopenfilename(
